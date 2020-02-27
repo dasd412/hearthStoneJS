@@ -1,0 +1,47 @@
+call by ~는 인자와 매개변수 간의 관계를 뜻한다.
+
+자바스크립트에는 call by value만 존재한다.
+
+call by value의 예시
+
+ex1)
+function foo(args){
+    args=10;
+    console.log(args);//10 출력
+}
+
+let args=5;
+foo(args);
+console.log(args);//5 출력
+
+ex2)
+
+function foo(args){
+    args.a=10;
+    console.log(args);//a:10출력
+}
+
+let args={a:5};
+foo(args);
+console.log(args);//a:10출력
+
+-->원시값은 함수내에서 바뀌어도, 외부의 원래 값은 바뀌지 않는다.
+반면, 객체는 함수 내에서 객체의 속성값이 바뀌면 외부의 원래 속성값도 바뀐다.
+단, 객체의 속성값만 해당된다.
+
+예를 들어 다음과 같은 경우,
+
+function foo(args){
+    args=8;
+    console.log(args);
+}
+
+args={a:5};
+foo(args);
+console.log(args);
+
+->call by value인 경우 , 함수 내에선 8, 함수 외부에선 {a:5}가 출력된다.
+
+->call by reference인 경우, 함수 내부와 외부 모두에서 8이 출력된다.
+
+
