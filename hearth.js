@@ -6,12 +6,22 @@ myDeck=document.getElementById('my-deck');
 let rivalDeckData=[],
 myDeckData=[];
 
-const myHeroData, rivalHeroData;
+let myHeroData, rivalHeroData;
 
-function Card(){//constructor of Card object
-    this.att=Math.ceil(Math.random()*5);
+function Card(isHero){//constructor of Card object
+
+    if(isHero===true){
+
+        this.att=Math.ceil(Math.random()*2);
+        this.hp=Math.ceil(Math.random()*5)+25;
+    }
+    else{
+      this.att=Math.ceil(Math.random()*5);
     this.hp=Math.ceil(Math.random()*5);
-    this.cost=Math.floor((this.att+this.hp)/2);
+    this.cost=Math.floor((this.att+this.hp)/2);  
+    }
+
+    
 }
 
 
@@ -19,32 +29,70 @@ function Card(){//constructor of Card object
 function createEnemyDeck(number){
 
     for(let i=0;i<number;i++){
-        rivalDeckData.push(fatoryCard());
+        rivalDeckData.push(fatoryCard(false));
        
     }
+
+    rivalDeckData.forEach(function(data){
+
+       const card=makeCardForAppending(data,false);
+
+        rivalDeck.appendChild(card);
+    });
 }
-function createMyDeck(){
+function createMyDeck(number){
         for(let i=0;i<number;i++){
-             myDeckData.push(fatoryCard());
+             myDeckData.push(fatoryCard(false));
        
         }
+
+        myDeckData.forEach(function(data){
+
+      
+            const card=makeCardForAppending(data,false);
+    
+            myDeck.appendChild(card);
+        });
+       
+
 }
 
 function createEnemyHero(){
 
-    rivalHeroData=fatoryCard();
+    rivalHeroData=fatoryCard(true);
+    
+    const card=makeCardForAppending(rivalHeroData,true);
+
+    rivalHero.appendChild(card);
 }
 
 function createMyHero(){
 
-    myHeroData=fatoryCard();
+    myHeroData=fatoryCard(true);
+
+    const card=makeCardForAppending(myHeroData,true);
+
+    myHero.appendChild(card);
 
 }
 
+function makeCardForAppending(data,isHero){
+    const card=document.querySelector('.card-hidden .card').cloneNode(true);
+    card.querySelector('.card-att').textContent=data.att;
+    card.querySelector('.card-hp').textContent=data.hp;
+    if(isHero===false){
+     card.querySelector('.card-cost').textContent=data.cost;
+    }
+   
+            
 
-function fatoryCard(){
+ return card;
+}
 
-    return new Card();
+
+function fatoryCard(isHero){
+
+    return new Card(isHero);
 }
 
 function init(){
