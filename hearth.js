@@ -14,11 +14,13 @@ function Card(isHero){//constructor of Card object
 
         this.att=Math.ceil(Math.random()*2);
         this.hp=Math.ceil(Math.random()*5)+25;
+        this.isHero=true;
     }
     else{
       this.att=Math.ceil(Math.random()*5);
     this.hp=Math.ceil(Math.random()*5);
     this.cost=Math.floor((this.att+this.hp)/2);  
+    this.isHero=false;
     }
 
     
@@ -78,10 +80,15 @@ function createMyHero(){
 
 function makeCardForAppending(data,isHero){
     const card=document.querySelector('.card-hidden .card').cloneNode(true);
+    card.querySelector('.card-cost').textContent=data.cost;
     card.querySelector('.card-att').textContent=data.att;
     card.querySelector('.card-hp').textContent=data.hp;
-    if(isHero===false){
-     card.querySelector('.card-cost').textContent=data.cost;
+    if(isHero===true){
+    
+     card.querySelector('.card-cost').style.display='none';
+     const name=document.createElement('div');
+     name.textContent='HERO';
+     card.appendChild(name);
     }
    
             
