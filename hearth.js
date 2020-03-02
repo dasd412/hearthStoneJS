@@ -5,7 +5,8 @@ myDeck=document.getElementById('my-deck'),
 rivalField=document.getElementById('rival-cards'),
 myField=document.getElementById('my-cards'),
 rivalCost=document.getElementById('rival-cost'),
-myCost=document.getElementById('my-cost');
+myCost=document.getElementById('my-cost'),
+turnBtn=document.getElementById('turn-btn');
 
 let rivalDeckData=[],
 myDeckData=[];
@@ -31,6 +32,7 @@ function Card(isHero,isMine){//constructor of Card object
     }
 
    this.isMine=isMine;
+   this.isOnField=false;
 
 
 
@@ -46,6 +48,9 @@ function createEnemyDeck(number){
        
     }
 
+    rivalDeck.innerHTML='';
+    
+
     rivalDeckData.forEach(function(data){
 
        makeCardForAppending(data,rivalDeck,false);
@@ -58,6 +63,8 @@ function createMyDeck(number){
              myDeckData.push(fatoryCard(false,true));
        
         }
+
+        myDeck.innerHTML='';
 
         myDeckData.forEach(function(data){
 
@@ -105,7 +112,7 @@ function makeCardForAppending(data,dom,isHero){
     card.addEventListener('click',function(card){
 
         if(turn){
-            if(data.isMine===false){
+            if(data.isMine===false||data.isOnField===true){
                 return;
             }
             const currentCost=Number(myCost.textContent);
@@ -130,12 +137,13 @@ function makeCardForAppending(data,dom,isHero){
             makeCardForAppending(data,myDeck,false);
            });
 
+           data.isOnField=true;
            myCost.textContent=myCost.textContent-data.cost;
-           
+           createMyDeck(1);
            
         }
         else{
-            if(data.isMine===true){
+            if(data.isMine===true||data.isOnField===true){
                 return;
             }
             const currentCost=Number(rivalCost.textContent);
@@ -160,8 +168,10 @@ function makeCardForAppending(data,dom,isHero){
               makeCardForAppending(data,rivalDeck,false);  
             });
             
+            data.isOnField=true;
     
             rivalCost.textContent=rivalCost.textContent-data.cost;
+            createEnemyDeck(1);
         }
 
     });
@@ -178,6 +188,25 @@ function fatoryCard(isHero,isMine){
 }
 
 function init(){
+
+    turnBtn.addEventListener('click',function(){
+        
+        turn=!turn;
+
+        if(turn){
+
+            myCost.textContent=10;
+        }
+        else{
+
+            rivalCost.textContent=10;
+        }
+        document.getElementById('rival').classList.toggle('turn');
+        document.getElementById('my').classList.toggle('turn');
+
+
+        
+    });
 
     createEnemyDeck(5);
     createMyDeck(5);
