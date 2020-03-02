@@ -1,14 +1,21 @@
 const rivalHero=document.getElementById('rival-hero'),
 myHero=document.getElementById('my-hero'),
 rivalDeck=document.getElementById('rival-deck'),
-myDeck=document.getElementById('my-deck');
+myDeck=document.getElementById('my-deck'),
+rivalField=document.getElementById('rival-cards'),
+myField=document.getElementById('my-cards'),
+rivalCost=document.getElementById('rival-cost'),
+myCost=document.getElementById('my-cost');
 
 let rivalDeckData=[],
 myDeckData=[];
 
 let myHeroData, rivalHeroData;
 
-function Card(isHero){//constructor of Card object
+let rivalFieldData=[],myFieldData=[];
+let turn=true;
+
+function Card(isHero,isMine){//constructor of Card object
 
     if(isHero===true){
 
@@ -23,6 +30,10 @@ function Card(isHero){//constructor of Card object
     this.isHero=false;
     }
 
+   this.isMine=isMine;
+
+
+
     
 }
 
@@ -31,29 +42,29 @@ function Card(isHero){//constructor of Card object
 function createEnemyDeck(number){
 
     for(let i=0;i<number;i++){
-        rivalDeckData.push(fatoryCard(false));
+        rivalDeckData.push(fatoryCard(false,false));
        
     }
 
     rivalDeckData.forEach(function(data){
 
-       const card=makeCardForAppending(data,false);
+       makeCardForAppending(data,rivalDeck,false);
 
-        rivalDeck.appendChild(card);
+        
     });
 }
 function createMyDeck(number){
         for(let i=0;i<number;i++){
-             myDeckData.push(fatoryCard(false));
+             myDeckData.push(fatoryCard(false,true));
        
         }
 
         myDeckData.forEach(function(data){
 
       
-            const card=makeCardForAppending(data,false);
+            makeCardForAppending(data,myDeck,false);
     
-            myDeck.appendChild(card);
+            
         });
        
 
@@ -61,24 +72,24 @@ function createMyDeck(number){
 
 function createEnemyHero(){
 
-    rivalHeroData=fatoryCard(true);
+    rivalHeroData=fatoryCard(true,false);
     
-    const card=makeCardForAppending(rivalHeroData,true);
+    makeCardForAppending(rivalHeroData,rivalHero,true);
 
-    rivalHero.appendChild(card);
+   
 }
 
 function createMyHero(){
 
-    myHeroData=fatoryCard(true);
+    myHeroData=fatoryCard(true,true);
 
-    const card=makeCardForAppending(myHeroData,true);
+    makeCardForAppending(myHeroData,myHero,true);
 
-    myHero.appendChild(card);
+    
 
 }
 
-function makeCardForAppending(data,isHero){
+function makeCardForAppending(data,dom,isHero){
     const card=document.querySelector('.card-hidden .card').cloneNode(true);
     card.querySelector('.card-cost').textContent=data.cost;
     card.querySelector('.card-att').textContent=data.att;
@@ -90,16 +101,80 @@ function makeCardForAppending(data,isHero){
      name.textContent='HERO';
      card.appendChild(name);
     }
-   
-            
 
- return card;
+    card.addEventListener('click',function(card){
+
+        if(turn){
+            if(data.isMine===false){
+                return;
+            }
+            const currentCost=Number(myCost.textContent);
+            if(currentCost<data.cost){
+                return;
+            }
+            const index=myDeckData.indexOf(data);
+            myDeckData.splice(index,1);
+            myFieldData.push(data);
+
+
+            myDeck.innerHTML='';
+            myField.innerHTML='';
+
+           myFieldData.forEach(function(data){
+
+            makeCardForAppending(data,myField,false);
+           });
+
+           myDeckData.forEach(function(data){
+
+            makeCardForAppending(data,myDeck,false);
+           });
+
+           myCost.textContent=myCost.textContent-data.cost;
+           
+           
+        }
+        else{
+            if(data.isMine===true){
+                return;
+            }
+            const currentCost=Number(rivalCost.textContent);
+            if(currentCost<data.cost){
+                return;
+            }
+
+            const index=rivalDeckData.indexOf(data);
+            rivalDeckData.splice(index,1);
+            rivalFieldData.push(data);
+
+            rivalDeck.innerHTML='';
+            rivalField.innerHTML='';
+
+            rivalFieldData.forEach(function(data){
+
+                makeCardForAppending(data,rivalField,false);
+            });
+
+            rivalDeckData.forEach(function(data){
+
+              makeCardForAppending(data,rivalDeck,false);  
+            });
+            
+    
+            rivalCost.textContent=rivalCost.textContent-data.cost;
+        }
+
+    });
+   
+            dom.appendChild(card);
+
+ 
 }
 
 
-function fatoryCard(isHero){
+function fatoryCard(isHero,isMine){
 
-    return new Card(isHero);
+    return new Card(isHero,isMine);
 }
 
 function init(){
