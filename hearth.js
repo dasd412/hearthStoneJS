@@ -6,7 +6,9 @@ const rival={
     cost:document.getElementById('rival-cost'),
     deckData:[],
     heroData:[],
-    fieldData:[]
+    fieldData:[],
+    select:null,
+    selectData:null
 },
 
 my={
@@ -16,7 +18,9 @@ my={
     cost:document.getElementById('my-cost'),
     deckData:[],
     heroData:[],
-    fieldData:[]
+    fieldData:[],
+    select:null,
+    selectData:null
 };
 
 const turnBtn=document.getElementById('turn-btn');
@@ -31,16 +35,18 @@ function Card(isHero,isMine){//constructor of Card object
         this.att=Math.ceil(Math.random()*2);
         this.hp=Math.ceil(Math.random()*5)+25;
         this.isHero=true;
+        this.isOnField=true;
     }
     else{
       this.att=Math.ceil(Math.random()*5);
     this.hp=Math.ceil(Math.random()*5);
     this.cost=Math.floor((this.att+this.hp)/2);  
     this.isHero=false;
+     this.isOnField=false;
     }
 
    this.isMine=isMine;
-   this.isOnField=false;
+  
 
 
 
@@ -81,6 +87,7 @@ function createHero(isMine){
 
 function deckToField(data,isMyTurn){
 
+    
     const obj=isMyTurn?my:rival;
 
     const index=obj.deckData.indexOf(data);
@@ -120,42 +127,10 @@ function makeCardForAppending(data,dom,isHero){
 
     card.addEventListener('click',function(){
 
-        if(turn){
-            if(data.isMine===false||data.isOnField===true){
-                return;
-            }
-            const currentCost=Number(my.cost.textContent);
-            if(currentCost<data.cost){
-                return;
-            }
-            if(data.field===true){
-
-            }
-            else{
-              deckToField(data,true);
-            }
+        
            
-           createDeck(1,true);
-           
-        }
-        else{
-            if(data.isMine===true||data.isOnField===true){
-                return;
-            }
-            const currentCost=Number(rival.cost.textContent);
-            if(currentCost<data.cost){
-                return;
-            }
-            if(data.field===true){
-
-            }
-            else{
-             deckToField(data,false);   
-            }
-
-            
-            createDeck(1,false);
-        }
+         turnAction(card,data,turn);
+        
 
     });
    
@@ -164,6 +139,85 @@ function makeCardForAppending(data,dom,isHero){
  
 }
 
+function turnAction(card, data, turn){
+    const ally=turn?my:rival;
+    const enemy=turn?rival:my;
+
+
+
+    if(card.classList.contains('card-turnover')){
+        return;
+    }
+
+    const enemyCard=turn?!data.isMine:data.isMine;
+
+
+
+    if(enemyCard&&ally.select&&data.isOnField){
+        data.hp=data.hp-ally.selectData.att;
+        
+       
+        if(data.hp<=0){
+            const index=enemy.fieldData.indexOf(data);
+            if(index>-1){
+                enemy.fieldData.splice(index,1);
+            }
+            else if(data.isHero){
+                alert('VICTORY!');
+                init();
+            }
+        } 
+        
+        
+        
+        const obj=turn?my:rival;
+
+        obj.field.innerHTML='';
+        obj.fieldData.forEach(function(data){
+            makeCardForAppending(data,obj.field,false);
+        });
+
+        obj.deck.innerHTML='';
+        obj.deckData.forEach(function(data){
+
+            makeCardForAppending(data,obj.deck,false);
+        });
+
+        obj.hero.innerHTML='';
+        makeCardForAppending(obj.heroData,obj.hero,true);
+
+    ally.select.classList.remove('card-selected');
+    ally.select.classList.add('card-turnover');
+    ally.select=null;
+    ally.selectData=null;
+
+    return;
+    }
+    else if(enemyCard){
+        return;
+    }
+
+    if(data.isOnField){
+        document.querySelectorAll('.card').forEach(function(card){
+
+            card.classList.remove('card-selected');
+        });
+        card.classList.add('card-selected');
+        ally.select=card;
+        ally.selectData=data;
+    }
+    else if(!data.isHero){
+        deckToField(data,turn);
+        turn?createDeck(1,true):createDeck(1,false);
+    }
+
+
+ 
+
+   
+
+
+}
 
 function fatoryCard(isHero,isMine){
 
@@ -171,6 +225,22 @@ function fatoryCard(isHero,isMine){
 }
 
 function init(){
+    
+
+    my.deck.innerHTML='';
+    rival.deck.innerHTML='';
+    my.hero.innerHTML='';
+    rival.hero.innerHTML='';
+    my.field.innerHTML='';
+    rival.field.innerHTML='';
+    my.deckData=[];
+    my.fieldData=[];
+    my.heroData=[];
+    rival.deckData=[],
+    rival.fieldData=[],
+    rival.heroData=[];
+    my.cost.textContent=10;
+    rival.cost.textContent=10;
 
     turnBtn.addEventListener('click',function(){
         
