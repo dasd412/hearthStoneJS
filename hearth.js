@@ -1,19 +1,27 @@
-const rivalHero=document.getElementById('rival-hero'),
-myHero=document.getElementById('my-hero'),
-rivalDeck=document.getElementById('rival-deck'),
-myDeck=document.getElementById('my-deck'),
-rivalField=document.getElementById('rival-cards'),
-myField=document.getElementById('my-cards'),
-rivalCost=document.getElementById('rival-cost'),
-myCost=document.getElementById('my-cost'),
-turnBtn=document.getElementById('turn-btn');
 
-let rivalDeckData=[],
-myDeckData=[];
+const rival={
+    hero:document.getElementById('rival-hero'),
+    deck:document.getElementById('rival-deck'),
+    field:document.getElementById('rival-cards'),
+    cost:document.getElementById('rival-cost'),
+    deckData:[],
+    heroData:[],
+    fieldData:[]
+},
 
-let myHeroData, rivalHeroData;
+my={
+    hero:document.getElementById('my-hero'),
+    deck:document.getElementById('my-deck'),
+    field:document.getElementById('my-cards'),
+    cost:document.getElementById('my-cost'),
+    deckData:[],
+    heroData:[],
+    fieldData:[]
+};
 
-let rivalFieldData=[],myFieldData=[];
+const turnBtn=document.getElementById('turn-btn');
+
+
 let turn=true;
 
 function Card(isHero,isMine){//constructor of Card object
@@ -44,32 +52,32 @@ function Card(isHero,isMine){//constructor of Card object
 function createEnemyDeck(number){
 
     for(let i=0;i<number;i++){
-        rivalDeckData.push(fatoryCard(false,false));
+        rival.deckData.push(fatoryCard(false,false));
        
     }
 
-    rivalDeck.innerHTML='';
+    rival.deck.innerHTML='';
     
 
-    rivalDeckData.forEach(function(data){
+    rival.deckData.forEach(function(data){
 
-       makeCardForAppending(data,rivalDeck,false);
+       makeCardForAppending(data,rival.deck,false);
 
         
     });
 }
 function createMyDeck(number){
         for(let i=0;i<number;i++){
-             myDeckData.push(fatoryCard(false,true));
+             my.deckData.push(fatoryCard(false,true));
        
         }
 
-        myDeck.innerHTML='';
+        my.deck.innerHTML='';
 
-        myDeckData.forEach(function(data){
+        my.deckData.forEach(function(data){
 
       
-            makeCardForAppending(data,myDeck,false);
+            makeCardForAppending(data,my.deck,false);
     
             
         });
@@ -79,18 +87,18 @@ function createMyDeck(number){
 
 function createEnemyHero(){
 
-    rivalHeroData=fatoryCard(true,false);
+    rival.heroData=fatoryCard(true,false);
     
-    makeCardForAppending(rivalHeroData,rivalHero,true);
+    makeCardForAppending(rival.heroData,rival.hero,true);
 
    
 }
 
 function createMyHero(){
 
-    myHeroData=fatoryCard(true,true);
+    my.heroData=fatoryCard(true,true);
 
-    makeCardForAppending(myHeroData,myHero,true);
+    makeCardForAppending(my.heroData,my.hero,true);
 
     
 
@@ -109,36 +117,36 @@ function makeCardForAppending(data,dom,isHero){
      card.appendChild(name);
     }
 
-    card.addEventListener('click',function(card){
+    card.addEventListener('click',function(){
 
         if(turn){
             if(data.isMine===false||data.isOnField===true){
                 return;
             }
-            const currentCost=Number(myCost.textContent);
+            const currentCost=Number(my.cost.textContent);
             if(currentCost<data.cost){
                 return;
             }
-            const index=myDeckData.indexOf(data);
-            myDeckData.splice(index,1);
-            myFieldData.push(data);
+            const index=my.deckData.indexOf(data);
+            my.deckData.splice(index,1);
+            my.fieldData.push(data);
 
 
-            myDeck.innerHTML='';
-            myField.innerHTML='';
+            my.deck.innerHTML='';
+            my.field.innerHTML='';
 
-           myFieldData.forEach(function(data){
+           my.fieldData.forEach(function(data){
 
-            makeCardForAppending(data,myField,false);
+            makeCardForAppending(data,my.field,false);
            });
 
-           myDeckData.forEach(function(data){
+           my.deckData.forEach(function(data){
 
-            makeCardForAppending(data,myDeck,false);
+            makeCardForAppending(data,my.deck,false);
            });
 
            data.isOnField=true;
-           myCost.textContent=myCost.textContent-data.cost;
+           my.cost.textContent=my.cost.textContent-data.cost;
            createMyDeck(1);
            
         }
@@ -146,31 +154,31 @@ function makeCardForAppending(data,dom,isHero){
             if(data.isMine===true||data.isOnField===true){
                 return;
             }
-            const currentCost=Number(rivalCost.textContent);
+            const currentCost=Number(rival.cost.textContent);
             if(currentCost<data.cost){
                 return;
             }
 
-            const index=rivalDeckData.indexOf(data);
-            rivalDeckData.splice(index,1);
-            rivalFieldData.push(data);
+            const index=rival.deckData.indexOf(data);
+            rival.deckData.splice(index,1);
+            rival.fieldData.push(data);
 
-            rivalDeck.innerHTML='';
-            rivalField.innerHTML='';
+            rival.deck.innerHTML='';
+            rival.field.innerHTML='';
 
-            rivalFieldData.forEach(function(data){
+            rival.fieldData.forEach(function(data){
 
-                makeCardForAppending(data,rivalField,false);
+                makeCardForAppending(data,rival.field,false);
             });
 
-            rivalDeckData.forEach(function(data){
+            rival.deckData.forEach(function(data){
 
-              makeCardForAppending(data,rivalDeck,false);  
+              makeCardForAppending(data,rival.deck,false);  
             });
             
             data.isOnField=true;
     
-            rivalCost.textContent=rivalCost.textContent-data.cost;
+            rival.cost.textContent=rival.cost.textContent-data.cost;
             createEnemyDeck(1);
         }
 
@@ -195,11 +203,11 @@ function init(){
 
         if(turn){
 
-            myCost.textContent=10;
+            my.cost.textContent=10;
         }
         else{
 
-            rivalCost.textContent=10;
+            rival.cost.textContent=10;
         }
         document.getElementById('rival').classList.toggle('turn');
         document.getElementById('my').classList.toggle('turn');
