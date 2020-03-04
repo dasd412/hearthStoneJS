@@ -87,8 +87,16 @@ function createHero(isMine){
 
 function deckToField(data,isMyTurn){
 
+
     
     const obj=isMyTurn?my:rival;
+    
+    
+    const currentCost=Number(obj.cost.textContent);
+
+    if(currentCost<data.cost){
+        return 'end';
+    }
 
     const index=obj.deckData.indexOf(data);
           obj.deckData.splice(index,1);
@@ -127,7 +135,7 @@ function makeCardForAppending(data,dom,isHero){
 
     card.addEventListener('click',function(){
 
-        
+      
            
          turnAction(card,data,turn);
         
@@ -149,14 +157,16 @@ function turnAction(card, data, turn){
         return;
     }
 
+    
     const enemyCard=turn?!data.isMine:data.isMine;
 
 
+    
 
     if(enemyCard&&ally.select&&data.isOnField){
         data.hp=data.hp-ally.selectData.att;
-        
-       
+        ally.selectData.hp=ally.selectData.hp-data.att;
+
         if(data.hp<=0){
             const index=enemy.fieldData.indexOf(data);
             if(index>-1){
@@ -166,11 +176,18 @@ function turnAction(card, data, turn){
                 alert('VICTORY!');
                 init();
             }
+        }
+        if(ally.selectData.hp<=0){
+            const index=ally.fieldData.indexOf(ally.selectData);
+            if(index>-1){
+                ally.fieldData.splice(index,1);
+               
+            }
         } 
         
         
         
-        const obj=turn?my:rival;
+        const obj=!turn?my:rival;
 
         obj.field.innerHTML='';
         obj.fieldData.forEach(function(data){
@@ -207,8 +224,9 @@ function turnAction(card, data, turn){
         ally.selectData=data;
     }
     else if(!data.isHero){
-        deckToField(data,turn);
+        if(deckToField(data,turn)!=='end'){
         turn?createDeck(1,true):createDeck(1,false);
+        }
     }
 
 
