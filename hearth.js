@@ -47,62 +47,37 @@ function Card(isHero,isMine){//constructor of Card object
     
 }
 
-
-
-function createEnemyDeck(number){
+function createDeck(number,isMine){
+    const obj=isMine?my:rival;
 
     for(let i=0;i<number;i++){
-        rival.deckData.push(fatoryCard(false,false));
+        obj.deckData.push(fatoryCard(false,isMine?true:false));
        
     }
 
-    rival.deck.innerHTML='';
+    obj.deck.innerHTML='';
     
 
-    rival.deckData.forEach(function(data){
+    obj.deckData.forEach(function(data){
 
-       makeCardForAppending(data,rival.deck,false);
+       makeCardForAppending(data,obj.deck,false);
 
         
     });
 }
-function createMyDeck(number){
-        for(let i=0;i<number;i++){
-             my.deckData.push(fatoryCard(false,true));
-       
-        }
 
-        my.deck.innerHTML='';
+function createHero(isMine){
+    const obj=isMine?my:rival;
 
-        my.deckData.forEach(function(data){
-
-      
-            makeCardForAppending(data,my.deck,false);
+    obj.heroData=fatoryCard(true,isMine?true:false);
     
-            
-        });
-       
+    makeCardForAppending(obj.heroData,obj.hero,true);
+
 
 }
 
-function createEnemyHero(){
 
-    rival.heroData=fatoryCard(true,false);
-    
-    makeCardForAppending(rival.heroData,rival.hero,true);
 
-   
-}
-
-function createMyHero(){
-
-    my.heroData=fatoryCard(true,true);
-
-    makeCardForAppending(my.heroData,my.hero,true);
-
-    
-
-}
 
 function deckToField(data,isMyTurn){
 
@@ -153,8 +128,14 @@ function makeCardForAppending(data,dom,isHero){
             if(currentCost<data.cost){
                 return;
             }
-            deckToField(data,true);
-           createMyDeck(1);
+            if(data.field===true){
+
+            }
+            else{
+              deckToField(data,true);
+            }
+           
+           createDeck(1,true);
            
         }
         else{
@@ -165,9 +146,15 @@ function makeCardForAppending(data,dom,isHero){
             if(currentCost<data.cost){
                 return;
             }
+            if(data.field===true){
 
-            deckToField(data,false);
-            createEnemyDeck(1);
+            }
+            else{
+             deckToField(data,false);   
+            }
+
+            
+            createDeck(1,false);
         }
 
     });
@@ -204,10 +191,10 @@ function init(){
         
     });
 
-    createEnemyDeck(5);
-    createMyDeck(5);
-    createEnemyHero();
-    createMyHero();
+    createDeck(5,false);
+    createDeck(5,true);
+     createHero(false);
+     createHero(true);
 
 }
 
