@@ -104,6 +104,32 @@ function createMyHero(){
 
 }
 
+function deckToField(data,isMyTurn){
+
+    const obj=isMyTurn?my:rival;
+
+    const index=obj.deckData.indexOf(data);
+          obj.deckData.splice(index,1);
+          obj.fieldData.push(data);
+
+
+            obj.deck.innerHTML='';
+            obj.field.innerHTML='';
+
+            obj.fieldData.forEach(function(data){
+
+            makeCardForAppending(data,obj.field,false);
+           });
+
+           obj.deckData.forEach(function(data){
+
+            makeCardForAppending(data,obj.deck,false);
+           });
+
+           data.isOnField=true;
+           obj.cost.textContent=obj.cost.textContent-data.cost;
+}
+
 function makeCardForAppending(data,dom,isHero){
     const card=document.querySelector('.card-hidden .card').cloneNode(true);
     card.querySelector('.card-cost').textContent=data.cost;
@@ -127,26 +153,7 @@ function makeCardForAppending(data,dom,isHero){
             if(currentCost<data.cost){
                 return;
             }
-            const index=my.deckData.indexOf(data);
-            my.deckData.splice(index,1);
-            my.fieldData.push(data);
-
-
-            my.deck.innerHTML='';
-            my.field.innerHTML='';
-
-           my.fieldData.forEach(function(data){
-
-            makeCardForAppending(data,my.field,false);
-           });
-
-           my.deckData.forEach(function(data){
-
-            makeCardForAppending(data,my.deck,false);
-           });
-
-           data.isOnField=true;
-           my.cost.textContent=my.cost.textContent-data.cost;
+            deckToField(data,true);
            createMyDeck(1);
            
         }
@@ -159,26 +166,7 @@ function makeCardForAppending(data,dom,isHero){
                 return;
             }
 
-            const index=rival.deckData.indexOf(data);
-            rival.deckData.splice(index,1);
-            rival.fieldData.push(data);
-
-            rival.deck.innerHTML='';
-            rival.field.innerHTML='';
-
-            rival.fieldData.forEach(function(data){
-
-                makeCardForAppending(data,rival.field,false);
-            });
-
-            rival.deckData.forEach(function(data){
-
-              makeCardForAppending(data,rival.deck,false);  
-            });
-            
-            data.isOnField=true;
-    
-            rival.cost.textContent=rival.cost.textContent-data.cost;
+            deckToField(data,false);
             createEnemyDeck(1);
         }
 
