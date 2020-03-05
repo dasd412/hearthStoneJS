@@ -244,23 +244,22 @@ function repaintField(obj){
         });
 }
 
+function reinitalize(obj){
+    obj.deck.innerHTML='';
+    obj.hero.innerHTML='';
+    obj.field.innerHTML='';
+    obj.deckData=[];
+    obj.fieldData=[];
+    obj.heroData=[];
+    obj.cost.textContent=10;
+}
+
 function init(){
     
+    reinitalize(my);
+    reinitalize(rival);
 
-    my.deck.innerHTML='';
-    rival.deck.innerHTML='';
-    my.hero.innerHTML='';
-    rival.hero.innerHTML='';
-    my.field.innerHTML='';
-    rival.field.innerHTML='';
-    my.deckData=[];
-    my.fieldData=[];
-    my.heroData=[];
-    rival.deckData=[],
-    rival.fieldData=[],
-    rival.heroData=[];
-    my.cost.textContent=10;
-    rival.cost.textContent=10;
+ 
 
     turnBtn.addEventListener('click',function(){
         const obj=turn?my:rival;
