@@ -61,15 +61,7 @@ function createDeck(number,isMine){
        
     }
 
-    obj.deck.innerHTML='';
-    
-
-    obj.deckData.forEach(function(data){
-
-       makeCardForAppending(data,obj.deck,false);
-
-        
-    });
+    repaintDeck(obj);
 }
 
 function createHero(isMine){
@@ -77,7 +69,7 @@ function createHero(isMine){
 
     obj.heroData=fatoryCard(true,isMine?true:false);
     
-    makeCardForAppending(obj.heroData,obj.hero,true);
+    repaintHero(obj);
 
 
 }
@@ -102,19 +94,8 @@ function deckToField(data,isMyTurn){
           obj.deckData.splice(index,1);
           obj.fieldData.push(data);
 
-
-            obj.deck.innerHTML='';
-            obj.field.innerHTML='';
-
-            obj.fieldData.forEach(function(data){
-
-            makeCardForAppending(data,obj.field,false);
-           });
-
-           obj.deckData.forEach(function(data){
-
-            makeCardForAppending(data,obj.deck,false);
-           });
+          repaintDeck(obj);
+          repaintField(obj);
 
            data.isOnField=true;
            obj.cost.textContent=obj.cost.textContent-data.cost;
@@ -189,19 +170,10 @@ function turnAction(card, data, turn){
         
         const obj=!turn?my:rival;
 
-        obj.field.innerHTML='';
-        obj.fieldData.forEach(function(data){
-            makeCardForAppending(data,obj.field,false);
-        });
+        repaintField(obj);
+        repaintDeck(obj);
+        repaintHero(obj);
 
-        obj.deck.innerHTML='';
-        obj.deckData.forEach(function(data){
-
-            makeCardForAppending(data,obj.deck,false);
-        });
-
-        obj.hero.innerHTML='';
-        makeCardForAppending(obj.heroData,obj.hero,true);
 
     ally.select.classList.remove('card-selected');
     ally.select.classList.add('card-turnover');
@@ -237,9 +209,39 @@ function turnAction(card, data, turn){
 
 }
 
+
 function fatoryCard(isHero,isMine){
 
     return new Card(isHero,isMine);
+}
+
+function repaintDeck(obj){
+
+
+    obj.deck.innerHTML='';
+    obj.deckData.forEach(function(data){
+
+        makeCardForAppending(data,obj.deck,false);
+    });
+
+}
+
+function repaintHero(obj){
+
+   
+
+    obj.hero.innerHTML='';
+    makeCardForAppending(obj.heroData,obj.hero,true);
+
+}
+
+function repaintField(obj){
+   
+
+        obj.field.innerHTML='';
+        obj.fieldData.forEach(function(data){
+            makeCardForAppending(data,obj.field,false);
+        });
 }
 
 function init(){
@@ -263,20 +265,10 @@ function init(){
     turnBtn.addEventListener('click',function(){
         const obj=turn?my:rival;
 
-        obj.field.innerHTML='';
-        obj.fieldData.forEach(function(data){
-            makeCardForAppending(data,obj.field,false);
-        });
-
-        obj.deck.innerHTML='';
-        obj.deckData.forEach(function(data){
-
-            makeCardForAppending(data,obj.deck,false);
-        });
-
-        obj.hero.innerHTML='';
-        makeCardForAppending(obj.heroData,obj.hero,true);
-
+        repaintDeck(obj);
+        repaintHero(obj);
+        repaintField(obj);
+        
         turn=!turn;
 
         if(turn){
