@@ -142,7 +142,6 @@ function turnAction(card, data, turn){
     const enemyCard=turn?!data.isMine:data.isMine;
 
 
-    
 
     if(enemyCard&&ally.select&&data.isOnField){
         data.hp=data.hp-ally.selectData.att;
@@ -159,6 +158,7 @@ function turnAction(card, data, turn){
             }
         }
         if(ally.selectData.hp<=0){
+
             const index=ally.fieldData.indexOf(ally.selectData);
             if(index>-1){
                 ally.fieldData.splice(index,1);
@@ -168,17 +168,19 @@ function turnAction(card, data, turn){
         
         
         
-        const obj=!turn?my:rival;
+     
 
-        repaintField(obj);
-        repaintDeck(obj);
-        repaintHero(obj);
+    repaintField(enemy);
+    repaintDeck(enemy);
+    repaintHero(enemy);
+     
 
 
     ally.select.classList.remove('card-selected');
     ally.select.classList.add('card-turnover');
     ally.select=null;
-    ally.selectData=null;
+    ally.selectData=null;   
+    
 
     return;
     }
