@@ -261,7 +261,22 @@ function init(){
     rival.cost.textContent=10;
 
     turnBtn.addEventListener('click',function(){
-        
+        const obj=turn?my:rival;
+
+        obj.field.innerHTML='';
+        obj.fieldData.forEach(function(data){
+            makeCardForAppending(data,obj.field,false);
+        });
+
+        obj.deck.innerHTML='';
+        obj.deckData.forEach(function(data){
+
+            makeCardForAppending(data,obj.deck,false);
+        });
+
+        obj.hero.innerHTML='';
+        makeCardForAppending(obj.heroData,obj.hero,true);
+
         turn=!turn;
 
         if(turn){
